@@ -1,0 +1,73 @@
+{
+	"easycom": {
+		"^u-(.*)": "uview-ui/components/u-$1/u-$1.vue"
+	},
+	"pages": [
+		{
+			"path": "pages/tabBar/index",
+			"style": {
+				"navigationStyle": "custom"
+			}
+		},
+		{
+			"path": "pages/tabBar/message",
+			"style": {
+				"navigationBarTitleText": ""
+			}
+		},
+		{
+			"path": "pages/tabBar/uCenter",
+			"style": {
+				"navigationStyle": "custom"
+			}
+		},
+		{
+			"path": "pages/login/index",
+			"style": {
+				"navigationStyle": "custom"
+			}
+		},
+		{
+			"path": "pages/processed/index",
+			"style": {
+				"navigationBarBackgroundColor":"#4682B4",
+				"navigationBarTitleText": "已处理"
+			}
+		},
+		{
+			"path": "pages/prescribingInfo/index",
+			"style": {
+				"navigationBarBackgroundColor":"#4682B4",
+				"navigationBarTitleText": "处方信息"
+			}
+		}
+	],
+	"globalStyle": {
+		"navigationBarTextStyle": "black",
+		"navigationBarTitleText": "uni-app",
+		"navigationBarBackgroundColor": "#F8F8F8",
+		"backgroundColor": "#F8F8F8"
+	},
+	"tabBar": {
+		"color": "#7A7E83",
+		"selectedColor": "#007AFF",
+		"borderStyle": "black",
+		"backgroundColor": "#FFFFFF",
+		"list": [{
+			"pagePath": "pages/tabBar/index",
+			"iconPath": "static/tabbar/list.png",
+			"selectedIconPath": "static/tabbar/list_active.png",
+			"text": "首页"
+		}, {
+			"pagePath": "pages/tabBar/message",
+			"iconPath": "static/tabbar/im-contacts.png",
+			"selectedIconPath": "static/tabbar/im-contacts_active.png",
+			"text": "消息"
+		}, {
+			"pagePath": "pages/tabBar/uCenter",
+			"iconPath": "static/tabbar/me.png",
+			"selectedIconPath": "static/tabbar/me_active.png",
+			"text": "我的"
+		}]
+	}
+}
