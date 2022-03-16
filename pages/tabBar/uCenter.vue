@@ -4,7 +4,7 @@
     <view class="head">
       <image v-if="islogin" src="../../static/avatar.jpg"></image>
       <view v-if="islogin" class="login_text">
-        <text>张三</text>
+        <text>{{ userInfo.username }}</text>
       </view>
       <u-button
         v-else
@@ -17,46 +17,70 @@
     </view>
 
     <u-cell-group>
-      <u-cell
-        icon="question-circle-fill"
-        title="问题与反馈"
-        :isLink="true"
-      ></u-cell>
+      <u-cell icon="info-circle-fill" title="个人资料" :isLink="true"></u-cell>
       <u-cell icon="setting-fill" title="设置" :isLink="true"></u-cell>
-      <u-cell icon="info-circle-fill" title="关于" :isLink="true"></u-cell>
     </u-cell-group>
 
     <view class="login_out" v-if="islogin"
       ><u-button
-        style="width: 370rpx"
+        style="width: 330rpx"
         type="error"
-        @click="logout"
+        @click="show = true"
         text="退出登录"
       ></u-button
     ></view>
+
+    <u-modal
+      :show="show"
+      @confirm="logout"
+      :title="title"
+      :asyncClose="true"
+      :content="content"
+      :showCancelButton="true"
+      width="500rpx"
+    ></u-modal>
   </view>
 </template>
 
 <script>
 import { isAuth } from "@/utils/token";
+import { getUserInfo } from "../../api/login";
 export default {
   data() {
     return {
       islogin: false,
+      userInfo: {},
+      content: "退出登录?",
+      title: "",
+      show: false,
     };
   },
 
   onShow() {
     this.islogin = isAuth();
   },
+  onLoad() {
+    this.getUserInfo();
+  },
 
   methods: {
     gologin() {
       uni.navigateTo({ url: "/pages/login/index" });
     },
+    async getUserInfo() {
+      let res = await getUserInfo();
+      if (res.code === 0 && res.msg === "success") {
+        this.userInfo = res.user;
+        this.$store.commit("saveUser", res.user);
+      }
+    },
     logout() {
-      this.$store.commit("delToken");
-      this.islogin = isAuth();
+      setTimeout(() => {
+        this.$store.commit("delToken");
+        this.$store.commit("delUser");
+        this.islogin = isAuth();
+        this.show = false;
+      }, 3000);
     },
   },
 };

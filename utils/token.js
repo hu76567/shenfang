@@ -3,7 +3,7 @@
  * @returns
  */
 let getToken = () => {
-  return uni.getStorageSync("identity_token") || '';
+  return uni.getStorageSync("token") || '';
 };
 
 /**
@@ -11,14 +11,14 @@ let getToken = () => {
  * @param {*} val
  */
 let setToken = (val) => {
-  uni.setStorageSync("identity_token", val);
+  uni.setStorageSync("token", val);
 };
 
 /**
  * 删除token
  */
 let removeToken = () => {
-  uni.removeStorageSync("identity_token");
+  uni.removeStorageSync("token");
 };
 
 /**

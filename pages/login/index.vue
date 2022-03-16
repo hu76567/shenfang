@@ -6,23 +6,13 @@
     </view>
 
     <view class="login_form">
-      <u-form labelPosition="left" :model="model" :rules="rules" ref="form">
-        <u-form-item
-          label="账号"
-          prop="userInfo.account"
-          borderBottom
-          ref="item1"
-        >
-          <u-input v-model="model.userInfo.account" border="none"></u-input>
+      <u-form labelPosition="left" :model="userInfo" :rules="rules" ref="form">
+        <u-form-item label="账号" prop="account" borderBottom ref="item1">
+          <u-input v-model="userInfo.username" border="none"></u-input>
         </u-form-item>
-        <u-form-item
-          label="密码"
-          prop="userInfo.password"
-          borderBottom
-          ref="item1"
-        >
+        <u-form-item label="密码" prop="password" borderBottom ref="item1">
           <u-input
-            v-model="model.userInfo.password"
+            v-model="userInfo.password"
             type="password"
             border="none"
           ></u-input>
@@ -40,28 +30,28 @@
     ></view>
 
     <u-toast ref="uToast"></u-toast>
+    <u-notify ref="uNotify"></u-notify>
   </view>
 </template>
 
 <script>
+import { login } from "../../api/login.js";
 export default {
   data() {
     return {
-      model: {
-        userInfo: {
-          account: "9527",
-          password: "",
-        },
+      userInfo: {
+        username: "admin",
+        password: "admin",
       },
       rules: {
-        "userInfo.account": {
+        username: {
           type: "string",
           max: 15,
           required: true,
           message: "请输入账号",
           trigger: ["blur", "change"],
         },
-        "userInfo.password": {
+        password: {
           type: "string",
           max: 15,
           required: true,
@@ -75,20 +65,41 @@ export default {
   methods: {
     // 登录
     login() {
-      this.$refs.uToast.show({
-        type: "loading",
-        message: "登录中...",
-        iconUrl: "https://cdn.uviewui.com/uview/demo/toast/loading.png",
-        complete: () => {
-          this.$store.commit("setToken", "token");
-          uni.switchTab({
-            url: "/pages/tabBar/uCenter",
-          });
-          // uni.navigateBack({
-          //   delta: 1,
-          // });
-        },
-      });
+      this.$refs.form
+        .validate()
+        .then(async () => {
+          let res = await login(this.userInfo);
+          if (res.code === 0 && res.msg === "success") {
+            this.$refs.uToast.show({
+              type: "loading",
+              message: "登录中...",
+              iconUrl: "https://cdn.uviewui.com/uview/demo/toast/loading.png",
+              complete: () => {
+                this.$store.commit("setToken", res.token);
+                uni.switchTab({
+                  url: "/pages/tabBar/uCenter",
+                });
+                // uni.navigateBack({
+                //   delta: 1,
+                // });
+              },
+            });
+          } else {
+            this.$refs.uNotify.show({
+              top: 0,
+              type: "error",
+              color: "#000",
+              // bgColor: "#e8e8e8",
+              message: res.msg,
+              duration: 2000,
+              fontSize: 16,
+              safeAreaInsetTop: true,
+            });
+          }
+        })
+        .catch((err) => {
+          // uni.$u.toast("校验失败");
+        });
     },
   },
 };

@@ -12,7 +12,7 @@
 </template>
 
 <script>
-import pendingSubmit from "./components/pendingSubmit";
+import waitSubmit from "./components/waitSubmit";
 import handleAdd from "./components/handleAdd";
 export default {
   data() {
@@ -28,19 +28,17 @@ export default {
     },
   },
   components: {
-    pendingSubmit,
+    waitSubmit,
     handleAdd,
   },
   computed: {
     currentTabComponent: function () {
       switch (this.curNow) {
         case 0:
-          return "pendingSubmit";
-          break;
+          return "waitSubmit";
 
         case 1:
           return "handleAdd";
-          break;
 
         default:
           break;
@@ -50,8 +48,4 @@ export default {
 };
 </script>
 <style lang='less' scoped>
-.tab {
-  // border: 1px solid #ccc;
-  // padding: 10px;
-}
 </style>

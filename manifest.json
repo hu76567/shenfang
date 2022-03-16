@@ -9,7 +9,7 @@
     "app-plus" : {
         "usingComponents" : true,
         "statusbar": {  
-            "immersed": false   // 关闭沉浸式
+            "immersed": true   // 沉浸式
         },
         "nvueStyleCompiler" : "uni-app",
         "compilerVersion" : 3,
@@ -46,7 +46,9 @@
             /* ios打包配置 */
             "ios" : {},
             /* SDK配置 */
-            "sdkConfigs" : {}
+            "sdkConfigs" : {
+                "ad" : {}
+            }
         }
     },
     /* 快应用特有相关 */
