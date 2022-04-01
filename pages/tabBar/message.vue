@@ -1,4 +1,4 @@
-<!--  -->
+<!-- 消息 -->
 <template>
   <div></div>
 </template>

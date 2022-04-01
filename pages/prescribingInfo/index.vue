@@ -1,24 +1,27 @@
-<!--  -->
+<!-- 处方信息 -->
 <template>
   <view>
-    <u-subsection
-      :list="list"
-      :current="curNow"
-      activeColor="#4682B4"
-      @change="sectionChange"
-    ></u-subsection>
+    <u-sticky>
+      <u-subsection
+        :list="list"
+        :current="curNow"
+        activeColor="#22A6F1"
+        @change="sectionChange"
+      ></u-subsection>
+    </u-sticky>
     <component class="tab" v-bind:is="currentTabComponent"></component>
   </view>
 </template>
 
 <script>
-import waitSubmit from "./components/waitSubmit";
+import pendingCommit from "./components/pendingCommit";
 import handleAdd from "./components/handleAdd";
+import eventBus from "@/utils/eventBus";
 export default {
   data() {
     return {
       list: ["待提交单据", "手动新增"],
-      curNow: 1,
+      curNow: 0,
     };
   },
 
@@ -27,15 +30,20 @@ export default {
       this.curNow = index;
     },
   },
+  created() {
+    eventBus.$on("switchToWait", () => {
+      this.curNow = 0;
+    });
+  },
   components: {
-    waitSubmit,
+   pendingCommit,
     handleAdd,
   },
   computed: {
     currentTabComponent: function () {
       switch (this.curNow) {
         case 0:
-          return "waitSubmit";
+          return "pendingCommit";
 
         case 1:
           return "handleAdd";

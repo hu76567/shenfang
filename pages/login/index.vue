@@ -7,7 +7,7 @@
 
     <view class="login_form">
       <u-form labelPosition="left" :model="userInfo" :rules="rules" ref="form">
-        <u-form-item label="账号" prop="account" borderBottom ref="item1">
+        <u-form-item label="账号" prop="username" borderBottom ref="item1">
           <u-input v-model="userInfo.username" border="none"></u-input>
         </u-form-item>
         <u-form-item label="密码" prop="password" borderBottom ref="item1">
@@ -35,13 +35,13 @@
 </template>
 
 <script>
-import { login } from "../../api/login.js";
+import { login } from "@/api/login.js";
 export default {
   data() {
     return {
       userInfo: {
-        username: "admin",
-        password: "admin",
+        username: "",
+        password: "",
       },
       rules: {
         username: {
@@ -68,22 +68,20 @@ export default {
       this.$refs.form
         .validate()
         .then(async () => {
+          this.$refs.uToast.show({
+            type: "loading",
+            message: "登录中...",
+          });
+
           let res = await login(this.userInfo);
           if (res.code === 0 && res.msg === "success") {
-            this.$refs.uToast.show({
-              type: "loading",
-              message: "登录中...",
-              iconUrl: "https://cdn.uviewui.com/uview/demo/toast/loading.png",
-              complete: () => {
-                this.$store.commit("setToken", res.token);
-                uni.switchTab({
-                  url: "/pages/tabBar/uCenter",
-                });
-                // uni.navigateBack({
-                //   delta: 1,
-                // });
-              },
+            this.$store.commit("setToken", res.token);
+            uni.switchTab({
+              url: "/pages/tabBar/index",
             });
+            // uni.navigateBack({
+            //   delta: 1,
+            // });
           } else {
             this.$refs.uNotify.show({
               top: 0,

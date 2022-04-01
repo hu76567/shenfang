@@ -15,6 +15,7 @@ import { http } from "../utils/http";
 export function getDrugList(data) {
   return http({
     url: "/app/drug/list",
+    header: "application/x-www-form-urlencoded",
     method: "post",
     data,
   });
@@ -38,9 +39,15 @@ export function editDrug(data) {
   });
 }
 
+
+/**
+ * 查询单据列表
+ * @param {*} data
+ * @returns
+ */
 export function getDrugbyMenu(data) {
   return http({
-    url: "",
+    url: "/app/order/list",
     method: "post",
     data,
   });

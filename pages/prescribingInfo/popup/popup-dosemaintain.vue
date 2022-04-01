@@ -12,53 +12,55 @@
       <u-form-item
         label="服用用法 :"
         @click="showUsage = true"
-        prop="documentDate"
+        prop="instructions"
         borderBottom
       >
         <u--input
           disabled
           disabledColor="#ffffff"
-          v-model="form.documentDate"
+          v-model="form.instructions"
           border="none"
         ></u--input>
       </u-form-item>
       <u-form-item
         label="服用频次 :"
         @click="showFrequency = true"
-        prop="documentSerialNumber"
+        prop="frequency"
         borderBottom
       >
         <u--input
           disabled
           disabledColor="#ffffff"
-          v-model="form.documentSerialNumber"
+          v-model="form.frequency"
           border="none"
         ></u--input>
       </u-form-item>
       <u-form-item
         label="服用剂量 :"
-        prop="patient"
+        prop="dosage"
         @click="showDose = true"
         borderBottom
       >
         <u--input
-          v-model="form.patient"
+          v-model="form.dosage"
           disabled
           disabledColor="#ffffff"
           border="none"
         ></u--input>
       </u-form-item>
     </u--form>
+
     <view class="doit">
       <u-button
         type="error"
         sizi="mini"
         :customStyle="{ width: '120rpx', height: '60rpx' }"
         text="保存"
-        @click="closeDoseMaintain"
-        color="#4682B4"
+        @click="save"
+        color="#22A6F1"
       ></u-button>
     </view>
+
     <!-- 用法 -->
     <u-action-sheet
       :show="showUsage"
@@ -92,15 +94,15 @@
 </template>
 
 <script>
-import { getUsageList, getFrequencyList, getDoseList } from "../../../api/list";
-import eventBus from "../../../utils/eventBus";
+import { getUsageList, getFrequencyList, getDoseList } from "@/api/list";
+import eventBus from "@/utils/eventBus";
 export default {
   data() {
     return {
       form: {
-        documentDate: "口服",
-        documentSerialNumber: "5",
-        patient: "张三",
+        instructions: "",
+        frequency: "",
+        dosage: "",
       },
       showUsage: false,
       showFrequency: false,
@@ -117,32 +119,56 @@ export default {
       let res = await getUsageList();
       if (res.code === 0 && res.msg === "success") {
         this.usageActions = res.page.list;
-        console.log(this.usageActions);
+        this.usageActions.map((item) => {
+          return (item.name = item.instructions);
+        });
       }
     },
     async getFrequencyList() {
       let res = await getFrequencyList();
       if (res.code === 0 && res.msg === "success") {
         this.frequencyActions = res.page.list;
-        console.log(this.frequencyActions);
+        this.frequencyActions.map((item) => {
+          return (item.name = item.frequency);
+        });
       }
     },
+    /** 查询剂量 */
     async getDoseList() {
       let res = await getDoseList();
       if (res.code === 0 && res.msg === "success") {
         this.doseActions = res.page.list;
-        console.log(this.doseActions);
+        this.doseActions.map((item) => {
+          return (item.name = item.dosage);
+        });
       }
     },
-    selectUsage() {},
-    selectFrequency() {},
-    selectDose() {},
+    selectUsage(val) {
+      this.form.instructions = val.name;
+    },
+    selectFrequency(val) {
+      this.form.frequency = val.name;
+    },
+    selectDose(val) {
+      this.form.dosage = val.name;
+    },
     close() {
       this.$emit("closeDoseMaintain");
     },
+    save() {
+      this.$emit("closeDoseMaintain", this.form, this.editId,this.editIndex);
+      this.editId=""
+      this.editIndex = "";
+    },
   },
   created() {
-    eventBus.$on("editDrug", () => {
+    eventBus.$on("editDrug", (item, index) => {
+      this.editIndex = index;
+      this.editId = item.id;
+      let { instructions, frequency, dosage } = item;
+      this.form.instructions = instructions;
+      this.form.frequency = frequency;
+      this.form.dosage = dosage;
       this.getUsageList();
       this.getFrequencyList();
       this.getDoseList();

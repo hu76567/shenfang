@@ -1,4 +1,4 @@
-<!--  -->
+<!-- 首页 -->
 <template>
   <view class="main">
     <view class="head">
@@ -6,10 +6,11 @@
         <image src="../../static/avatar.jpg"></image>
       </view>
       <view class="head_right">
-        <p>姓名:{{$store.state.user.username}}</p>
-        <p>药店名称:博爱一部</p>
+        <p>姓名 : {{ $store.state.user.username }}</p>
+        <p>药店名称 : 暂无</p>
       </view>
     </view>
+
     <view class="pharmacistlist">
       <u-list @scrolltolower="scrolltolower">
         <u-list-item v-for="(item, index) in pharmacistlist" :key="index">
@@ -27,7 +28,7 @@
               type="primary"
               size="small"
               text="处方"
-              color="#0AB99C"
+              color="#22A6F1"
               @click="goPrescribingInfo"
             ></u-button>
             <u-button
@@ -36,7 +37,8 @@
               type="primary"
               size="small"
               text="视频"
-              color="#0AB99C"
+              @click="goVideoCall(item.userId)"
+              color="#22A6F1"
             ></u-button>
           </u-cell>
         </u-list-item>
@@ -44,73 +46,173 @@
     </view>
 
     <view class="statistical">
-      <view class="item">
-        <p>100</p>
+      <view class="item" @click="goCommited">
+        <p>{{ commitCount }}</p>
         <p>提交数量</p>
       </view>
       <view class="item" @click="goProcessed">
-        <p>60</p>
+        <p>{{ dealedCount }}</p>
         <p>已处理</p>
       </view>
-      <view class="item"
-        ><p>40</p>
-        <p>未处理</p></view
+      <view class="item" @click="pendingProcess"
+        ><p>{{ pendingDealedCount }}</p>
+        <p>待处理</p></view
       >
     </view>
+
+    <u-toast ref="uToast"></u-toast>
   </view>
 </template>
 
 <script>
-import { getPharmacistList } from "../../api/list";
+import { getPharmacistList } from "@/api/list";
+import { getUserInfo } from "@/api/login";
+import { queryPrescriptionCount } from "@/api/work.js";
 export default {
   data() {
     return {
-      indexList: [],
-      urls: [
-        "https://cdn.uviewui.com/uview/album/1.jpg",
-        "https://cdn.uviewui.com/uview/album/2.jpg",
-        "https://cdn.uviewui.com/uview/album/3.jpg",
-        "https://cdn.uviewui.com/uview/album/4.jpg",
-        "https://cdn.uviewui.com/uview/album/5.jpg",
-        "https://cdn.uviewui.com/uview/album/6.jpg",
-        "https://cdn.uviewui.com/uview/album/7.jpg",
-        "https://cdn.uviewui.com/uview/album/8.jpg",
-        "https://cdn.uviewui.com/uview/album/9.jpg",
-        "https://cdn.uviewui.com/uview/album/10.jpg",
-      ],
       pharmacistlist: [],
+      commitCount: "",
+      dealedCount: "",
+      pendingDealedCount: "",
     };
   },
 
   methods: {
+    /** 药师列表 */
     async getPharmacistList() {
-      let res = await getPharmacistList();
-      if (res.code === 0 && res.msg === "success") {
-        this.pharmacistlist = res.list;
+      try {
+        uni.showLoading({
+          title: "加载中",
+        });
+        let res = await getPharmacistList();
+        uni.hideLoading();
+        if (res.code === 0 && res.msg === "success")
+          this.pharmacistlist = res.list;
+      } catch (error) {
+        uni.hideLoading();
       }
     },
-    // 滚动到底部触发
-    scrolltolower() {
-      // this.loadmore();
-    },
-    loadmore() {
-      // this.indexList = [...this.indexList, ...this.urls];
-      for (let i = 0; i < 50; i++) {
-        this.indexList.push({
-          url: this.urls[uni.$u.random(0, this.urls.length - 1)],
+    /** 查单据统计 */
+    async queryPrescriptionCount() {
+      let res = await queryPrescriptionCount({
+        userId: this.$store.state.user.userId,
+      });
+      if (res.code === 0 && res.msg === "success") {
+        this.commitCount = res.commitCount;
+        this.dealedCount = res.dealedCount;
+        this.pendingDealedCount = res.pendingDealedCount;
+      } else {
+        this.$refs.uToast.show({
+          type: "default",
+          icon: false,
+          message: res.msg,
+          iconUrl: "https://cdn.uviewui.com/uview/demo/toast/error.png",
+          complete() {},
         });
       }
     },
+    async getUserInfo() {
+      let res = await getUserInfo();
+      if (res.code === 0 && res.msg === "success") {
+        this.userInfo = res.user;
+        this.$store.commit("saveUser", res.user);
+      } else {
+        this.$refs.uToast.show({
+          type: "default",
+          icon: false,
+          message: res.msg,
+          complete() {
+            uni.navigateTo({
+              url: "/pages/login/index",
+            });
+          },
+        });
+      }
+    },
+    // 滚动到底部触发
+    scrolltolower() {},
+    // 去已处理
     goProcessed() {
-      uni.navigateTo({ url: "/pages/processed/index" });
+      uni.navigateTo({ url: "/pages/other/processed" });
+    },
+    // 去待处理
+    pendingProcess() {
+      uni.navigateTo({ url: "/pages/other/pendingProcess" });
+    },
+    // 已提交
+    goCommited() {
+      uni.navigateTo({ url: "/pages/other/commited" });
     },
     //
     goPrescribingInfo() {
-      uni.navigateTo({ url: "/pages/prescribingInfo/index" });
+      let token = uni.getStorageSync("token");
+      if (token) {
+        uni.navigateTo({ url: "/pages/prescribingInfo/index" });
+      } else {
+        this.$refs.uToast.show({
+          type: "default",
+          icon: false,
+          message: "未登录 !",
+          complete() {
+            uni.navigateTo({
+              url: "/pages/login/index",
+            });
+          },
+        });
+      }
+    },
+
+    goVideoCall(id) {
+      let token = uni.getStorageSync("token");
+      if (token) {
+        uni.navigateTo({ url: "/pages/videoCall/index?pharmacistId=" + id });
+      } else {
+        this.$refs.uToast.show({
+          type: "default",
+          icon: false,
+          message: "未登录 !",
+          complete() {
+            uni.navigateTo({
+              url: "/pages/login/index",
+            });
+          },
+        });
+      }
     },
   },
-  onLoad() {
-    this.getPharmacistList();
+
+  onShow() {
+    if (this.$store.state.token) {
+      this.getUserInfo();
+      this.getPharmacistList();
+      this.queryPrescriptionCount();
+    } else {
+      this.$refs.uToast.show({
+        type: "default",
+        icon: false,
+        message: "未登录 !",
+        complete() {
+          uni.navigateTo({
+            url: "/pages/login/index",
+          });
+        },
+      });
+    }
+  },
+  onReady() {
+    if (!this.$store.state.token) {
+      this.$refs.uToast.show({
+        type: "default",
+        icon: false,
+        message: "未登录 !",
+        complete() {
+          uni.navigateTo({
+            url: "/pages/login/index",
+          });
+        },
+      });
+    }
   },
 };
 </script>
@@ -118,7 +220,7 @@ export default {
 <style lang='less' scoped>
 .main {
   position: relative;
-  padding-bottom: 120rpx;
+  padding: 270rpx 0 100rpx 0;
   .head {
     display: flex;
     width: 100%;
@@ -126,7 +228,7 @@ export default {
     position: fixed;
     top: 0rpx;
     z-index: 999;
-    background-color: steelblue;
+    background-color: #22a6f1;
     .head_left {
       flex: 3;
       text-align: center;
@@ -152,15 +254,17 @@ export default {
   }
 
   .pharmacistlist {
-    padding-top: 270rpx;
+    // padding-top: 270rpx;
   }
 
   .statistical {
     width: 100%;
     height: 100rpx;
     position: fixed;
-    bottom: 100rpx;
-    background-color: steelblue;
+    bottom: var(--window-bottom);
+    // bottom: 0;
+    background-color: #22a6f1;
+    border-radius: 15rpx 15rpx 0 0;
     display: flex;
     z-index: 999;
     justify-content: space-around;

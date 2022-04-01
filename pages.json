@@ -12,7 +12,8 @@
 		{
 			"path": "pages/tabBar/message",
 			"style": {
-				"navigationBarTitleText": ""
+				"navigationBarBackgroundColor":"#22A6F1",
+				"navigationBarTitleText": "消息"
 			}
 		},
 		{
@@ -28,46 +29,76 @@
 			}
 		},
 		{
-			"path": "pages/processed/index",
+			"path": "pages/other/processed",
 			"style": {
-				"navigationBarBackgroundColor":"#4682B4",
+				"navigationBarBackgroundColor":"#22A6F1",
 				"navigationBarTitleText": "已处理"
+			}
+		},
+		{
+			"path": "pages/other/pendingProcess",
+			"style": {
+				"navigationBarBackgroundColor":"#22A6F1",
+				"navigationBarTitleText": "待处理"
+			}
+		},
+		{
+			"path": "pages/other/commited",
+			"style": {
+				"navigationBarBackgroundColor":"#22A6F1",
+				"navigationBarTitleText": "已提交"
+			}
+		},
+		// 以上三个可以封装成一个，不封了，累了
+		{
+			"path": "pages/prescriptionDetail/index",
+			"style": {
+				"navigationBarBackgroundColor":"#22A6F1",
+				"navigationBarTitleText": "处方详情"
 			}
 		},
 		{
 			"path": "pages/prescribingInfo/index",
 			"style": {
-				"navigationBarBackgroundColor":"#4682B4",
+				"navigationBarBackgroundColor":"#22A6F1",
 				"navigationBarTitleText": "处方信息"
 			}
+		},
+		{
+			"path": "pages/videoCall/index",
+			"style": {
+				"navigationStyle": "custom"
+			}
+		},
+		{
+			"path": "pages/editPrescription/index",
+			"style": {
+				"navigationBarBackgroundColor":"#22A6F1",
+				"navigationBarTitleText": "编辑处方"
+			}
 		}
+		
 	],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",
-		"navigationBarTitleText": "uni-app",
+		"navigationBarTitleText": "在线审方",
 		"navigationBarBackgroundColor": "#F8F8F8",
 		"backgroundColor": "#F8F8F8"
 	},
 	"tabBar": {
 		"color": "#7A7E83",
-		"selectedColor": "#007AFF",
+		"selectedColor": "#22A6F1",
 		"borderStyle": "black",
-		"backgroundColor": "#FFFFFF",
+		"backgroundColor": "#fff",
 		"fontSize":"13px",
 		"list": [{
 			"pagePath": "pages/tabBar/index",
-			// "iconPath": "static/tabbar/list.png",
-			// "selectedIconPath": "static/tabbar/list_active.png",
 			"text": "首页"
 		}, {
 			"pagePath": "pages/tabBar/message",
-			// "iconPath": "static/tabbar/im-contacts.png",
-			// "selectedIconPath": "static/tabbar/im-contacts_active.png",
 			"text": "消息"
 		}, {
 			"pagePath": "pages/tabBar/uCenter",
-			// "iconPath": "static/tabbar/me.png",
-			// "selectedIconPath": "static/tabbar/me_active.png",
 			"text": "我的"
 		}]
 	}

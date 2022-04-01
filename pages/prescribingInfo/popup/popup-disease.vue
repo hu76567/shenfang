@@ -19,31 +19,19 @@
 </template>
 
 <script>
-import { getDiseaseList } from "../../../api/list";
-import eventBus from "../../../utils/eventBus";
+import { getDiseaseList } from "@/api/list";
+import eventBus from "@/utils/eventBus";
 export default {
   data() {
     return {
       diseaseList: [],
-      urls: [
-        "https://cdn.uviewui.com/uview/album/1.jpg",
-        "https://cdn.uviewui.com/uview/album/2.jpg",
-        "https://cdn.uviewui.com/uview/album/3.jpg",
-        "https://cdn.uviewui.com/uview/album/4.jpg",
-        "https://cdn.uviewui.com/uview/album/5.jpg",
-        "https://cdn.uviewui.com/uview/album/6.jpg",
-        "https://cdn.uviewui.com/uview/album/7.jpg",
-        "https://cdn.uviewui.com/uview/album/8.jpg",
-        "https://cdn.uviewui.com/uview/album/9.jpg",
-        "https://cdn.uviewui.com/uview/album/10.jpg",
-      ],
       page: {
         currentPage: 1,
         pageSize: 10,
       },
     };
   },
-  props: ["showDiseasesList"],
+  props: ["showDiseasesList","diseaseName"],
   methods: {
     async getDiseaseList(key) {
       let res = await getDiseaseList({
@@ -65,7 +53,7 @@ export default {
     // 到底部
     scrolltolower() {
       this.page.currentPage += 1;
-      this.getDiseaseList();
+      this.getDiseaseList(this.diseaseName);
     },
     // 关闭
     close() {

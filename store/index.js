@@ -16,7 +16,7 @@ export default new Vuex.Store({
       setToken(payload);
     },
     delToken(state) {
-      state.token = [];
+      state.token = '';
       removeToken();
     },
     saveUser(state, payload) {

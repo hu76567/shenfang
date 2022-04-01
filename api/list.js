@@ -12,23 +12,6 @@ export function getPharmacistList() {
 }
 
 /**
- * 查询疾病列表
- * @param {
- * name 疾病名称
- * page  页码
- * limit 每页条数
- * } data
- * @returns
- */
-export function getDiseaseList(data) {
-  return http({
-    url: "/app/diseaseclassification/list",
-    method: "post",
-    data,
-  });
-}
-
-/**
  * 查询用法列表
  * @param {
  * instructions 用法
@@ -40,6 +23,24 @@ export function getDiseaseList(data) {
 export function getUsageList(data) {
   return http({
     url: "/app/usage/list",
+    method: "post",
+    data,
+  });
+}
+
+/**
+ * 查询疾病列表
+ * @param {
+ * name 疾病名称
+ * page  页码
+ * limit 每页条数
+ * } data
+ * @returns
+ */
+export function getDiseaseList(data) {
+  return http({
+    url: "/app/diseaseclassification/list",
+    header: "application/x-www-form-urlencoded",
     method: "post",
     data,
   });
@@ -73,7 +74,7 @@ export function getFrequencyList(data) {
  */
 export function getDoseList(data) {
   return http({
-    url: "/app/usage/list",
+    url: "/app/dosage/list",
     method: "post",
     data,
   });
